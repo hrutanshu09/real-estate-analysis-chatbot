@@ -40,9 +40,8 @@ function App() {
   const API_BASE = "http://127.0.0.1:8000";
 
   const suggestions = [
-    "Give me analysis of Wakad",
-    "Show price growth for Akurdi over the last 3 years",
-    "Compare Ambegaon Budruk and Aundh demand trends",
+    "Compare Wakad and Aundh",
+    "Analyze all locations",
     "Best buy in Pune",
     "Download data"
   ];
@@ -252,14 +251,19 @@ function App() {
   };
 
   return (
-    <Container className="main-container">
-      <Row className="justify-content-center">
+    <Container fluid className="main-container px-5">
+      <Row>
         {/* Chat Section */}
         <Col md={8} lg={8}>
           <Card className="chat-card">
             <Card.Header className="chat-header d-flex justify-content-between align-items-center px-4">
               <div>
-                <h4 style={{ fontWeight: 700, color: '#444', margin: 0 }}>📊 Real Estate Assistant</h4>
+                <h4 
+                  className="bbh-sans-bartle-regular" 
+                  style={{ color: '#444', margin: 0, fontSize: '2rem' }}
+                >
+                  📊 Real Estate Assistant
+                </h4>
                 {activeAreas.length > 0 && (
                   <small className="text-muted">
                     Context: <strong>{activeAreas.join(", ")}</strong>
@@ -305,37 +309,35 @@ function App() {
             </div>
 
             <div className="input-area">
-            <div className="mb-3">
-  {/* Group 1: Standard Suggestions */}
-  <div className="quick-actions">
-    {suggestions
-      .filter((s) => s !== "Download data")
-      .map((s, i) => (
-        <div
-          key={i}
-          className="suggestion-chip"
-          onClick={() => sendMessage(s)}
-        >
-          {s}
-        </div>
-      ))}
-  </div>
+              <div className="mb-3">
+                <div className="quick-actions">
+                  {suggestions
+                    .filter((s) => s !== "Download data")
+                    .map((s, i) => (
+                      <div
+                        key={i}
+                        className="suggestion-chip"
+                        onClick={() => sendMessage(s)}
+                      >
+                        {s}
+                      </div>
+                    ))}
+                </div>
 
-  {/* Group 2: Download Button (Centered on Next Line) */}
-  <div className="d-flex justify-content-center mt-2">
-    <div
-      className="suggestion-chip"
-      onClick={() => sendMessage("Download data")}
-      style={{
-        backgroundColor: "#ff7300",
-        color: "white",
-        borderColor: "#ff7300",
-      }}
-    >
-      Download data
-    </div>
-  </div>
-</div>
+                <div className="d-flex justify-content-center mt-2">
+                  <div
+                    className="suggestion-chip"
+                    onClick={() => sendMessage("Download data")}
+                    style={{
+                      backgroundColor: "#ff7300",
+                      color: "white",
+                      borderColor: "#ff7300",
+                    }}
+                  >
+                    Download data
+                  </div>
+                </div>
+              </div>
               
               <Form onSubmit={handleSubmit}>
                 <Row className="g-2">
@@ -363,18 +365,23 @@ function App() {
         {/* Instructions Section (Right Side) */}
         <Col md={4} lg={4} className="d-none d-md-block">
           <Card className="p-4 border-0 shadow-sm" style={{ backgroundColor: 'rgba(255, 255, 255, 0.85)', borderRadius: '20px' }}>
-            <h5 className="mb-3" style={{ color: '#444', fontWeight: '700' }}>ℹ️ How to Download</h5>
-            <p style={{ fontSize: '0.9rem', color: '#555' }}>
+            <h5 
+              className="mb-3 bbh-sans-bartle-regular" 
+              style={{ color: '#444', fontSize: '1.8rem' }}
+            >
+              ℹ️ How to Download
+            </h5>
+            <p className="instruction-text">
               You can download the real estate data as a CSV file to analyze it yourself.
             </p>
             <hr style={{ borderColor: '#ddd' }}/>
-            <h6 style={{ fontSize: '0.95rem', fontWeight: '600', color: '#667eea' }}>Smart Download</h6>
-            <p style={{ fontSize: '0.85rem', color: '#666' }}>
+            <h6 style={{ fontSize: '1.1rem', fontWeight: '600', color: '#667eea' }}>Smart Download</h6>
+            <p className="instruction-subtext">
               If you are discussing specific locations (e.g., "Wakad vs Aundh"), the file will contain data for <strong>only those areas</strong>. 
               If no location is selected, you will get the <strong>full dataset</strong>.
             </p>
-            <h6 style={{ fontSize: '0.95rem', fontWeight: '600', color: '#667eea' }}>How to Use</h6>
-            <p style={{ fontSize: '0.85rem', color: '#666' }}>
+            <h6 style={{ fontSize: '1.1rem', fontWeight: '600', color: '#667eea' }}>How to Use</h6>
+            <p className="instruction-subtext">
               Click the <strong>"⬇ Download Data"</strong> button at the top right of the chat, or simply type <strong>"Download data"</strong> in the chat.
             </p>
           </Card>

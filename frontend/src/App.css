@@ -1,4 +1,7 @@
-/* frontend/src/App.css */
+/* Imports for both fonts */
+@import url('https://fonts.googleapis.com/css2?family=BBH+Sans+Bartle&family=Changa+One:ital@0;1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+
 :root {
   --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   --chat-bg: rgba(255, 255, 255, 0.95);
@@ -7,9 +10,18 @@
   --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
+/* Title Font Class (Unchanged) */
+.bbh-sans-bartle-regular {
+  font-family: "BBH Sans Bartle", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* Apply Outfit to the rest of the app */
 body {
   background-image: var(--primary-gradient);
   min-height: 100vh;
+  font-family: "Outfit", sans-serif; /* Global font change */
 }
 
 .main-container {
@@ -57,10 +69,10 @@ body {
 
 .message-bubble {
   max-width: 75%;
-  padding: 12px 18px;
+  padding: 14px 20px; /* Increased padding */
   border-radius: 18px;
-  font-size: 0.95rem;
-  line-height: 1.5;
+  font-size: 1.1rem; /* Increased from 0.95rem */
+  line-height: 1.6;
   position: relative;
   box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
@@ -98,8 +110,8 @@ body {
   background: rgba(255, 255, 255, 0.2);
   border: 1px solid #ddd;
   border-radius: 20px;
-  padding: 5px 15px;
-  font-size: 0.85rem;
+  padding: 8px 18px; /* Increased padding */
+  font-size: 1rem;   /* Increased from 0.85rem */
   cursor: pointer;
   transition: all 0.2s;
   color: #555;
@@ -126,6 +138,9 @@ body {
   border-radius: 25px !important;
   padding-left: 20px !important;
   border: 2px solid #eee !important;
+  font-size: 1.1rem !important; /* Increased input font size */
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
 }
 
 .custom-input:focus {
@@ -135,8 +150,8 @@ body {
 
 .send-btn {
   border-radius: 50% !important;
-  width: 45px;
-  height: 45px;
+  width: 50px; /* Slightly larger button */
+  height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -154,7 +169,19 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Chart & Table overrides for smaller spaces */
 .recharts-wrapper {
   margin: 0 auto;
+}
+
+/* New class for Instruction Text to control size easily */
+.instruction-text {
+  font-size: 1.15rem !important; /* Larger, readable text */
+  line-height: 1.6;
+  color: #555;
+}
+
+.instruction-subtext {
+  font-size: 1.05rem !important;
+  color: #666;
+  line-height: 1.5;
 }
