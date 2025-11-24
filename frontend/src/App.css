@@ -1,6 +1,6 @@
-/* Imports for both fonts */
-@import url('https://fonts.googleapis.com/css2?family=BBH+Sans+Bartle&family=Changa+One:ital@0;1&display=swap');
+/* Import Outfit Font correctly */
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+/* The previous BBH import was invalid (400 error) on Google Fonts, so it has been removed to prevent blocking Outfit. */
 
 :root {
   --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -10,18 +10,22 @@
   --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
-/* Title Font Class (Unchanged) */
+/* Title Font Class */
+/* Note: Since BBH Sans Bartle is not on Google Fonts, this class will fall back to sans-serif 
+   unless you have the font file locally or a valid custom URL. */
 .bbh-sans-bartle-regular {
   font-family: "BBH Sans Bartle", sans-serif;
   font-weight: 400;
   font-style: normal;
 }
 
-/* Apply Outfit to the rest of the app */
+/* Apply Outfit to the rest of the app globally */
 body {
   background-image: var(--primary-gradient);
   min-height: 100vh;
-  font-family: "Outfit", sans-serif; /* Global font change */
+  font-family: "Outfit", sans-serif; /* Global font application */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .main-container {
@@ -69,12 +73,14 @@ body {
 
 .message-bubble {
   max-width: 75%;
-  padding: 14px 20px; /* Increased padding */
+  padding: 14px 20px;
   border-radius: 18px;
-  font-size: 1.1rem; /* Increased from 0.95rem */
+  font-size: 1.1rem;
   line-height: 1.6;
   position: relative;
   box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  /* Ensure Outfit applies here */
+  font-family: "Outfit", sans-serif;
 }
 
 .user-message {
@@ -110,12 +116,14 @@ body {
   background: rgba(255, 255, 255, 0.2);
   border: 1px solid #ddd;
   border-radius: 20px;
-  padding: 8px 18px; /* Increased padding */
-  font-size: 1rem;   /* Increased from 0.85rem */
+  padding: 8px 18px;
+  font-size: 1rem;
   cursor: pointer;
   transition: all 0.2s;
   color: #555;
   background: white;
+  /* Ensure Outfit applies here */
+  font-family: "Outfit", sans-serif;
 }
 
 .suggestion-chip:hover {
@@ -138,9 +146,11 @@ body {
   border-radius: 25px !important;
   padding-left: 20px !important;
   border: 2px solid #eee !important;
-  font-size: 1.1rem !important; /* Increased input font size */
+  font-size: 1.1rem !important;
   padding-top: 10px !important;
   padding-bottom: 10px !important;
+  /* Ensure Outfit applies to input text */
+  font-family: "Outfit", sans-serif !important;
 }
 
 .custom-input:focus {
@@ -150,7 +160,7 @@ body {
 
 .send-btn {
   border-radius: 50% !important;
-  width: 50px; /* Slightly larger button */
+  width: 50px;
   height: 50px;
   display: flex;
   align-items: center;
@@ -173,15 +183,17 @@ body {
   margin: 0 auto;
 }
 
-/* New class for Instruction Text to control size easily */
+/* Instruction Text */
 .instruction-text {
-  font-size: 1.15rem !important; /* Larger, readable text */
+  font-size: 1.15rem !important;
   line-height: 1.6;
   color: #555;
+  font-family: "Outfit", sans-serif;
 }
 
 .instruction-subtext {
   font-size: 1.05rem !important;
   color: #666;
   line-height: 1.5;
+  font-family: "Outfit", sans-serif;
 }
