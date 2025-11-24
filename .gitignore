@@ -1,0 +1,60 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build output
+dist/
+build/
+coverage/
+lib/
+tmp/
+.temp/
+*.tsbuildinfo
+
+# Runtime files
+.env
+.env.local
+.env.*.local
+.env.test
+.env.production
+*.pid
+*.seed
+*.log
+logs/
+log/
+pids/
+*.sqlite
+*.sqlite3
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editors and IDEs
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Docker
+docker-compose.override.yml
+.docker/
+
+# Misc
+coverage/
+.cache/
+uploads/
+*.tgz
+
+# Ignore sensitive or generated certs/keys
+*.pem
+*.key
+*.crt
+
+# Optional: lockfiles (uncomment if you don't want to commit them)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
