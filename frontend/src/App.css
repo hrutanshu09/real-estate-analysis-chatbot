@@ -2,6 +2,22 @@
 @import url('https://fonts.googleapis.com/css2?family=BBH+Sans+Bartle&family=Changa+One:ital@0;1&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 
+html {
+  font-size: 16px; /* Default for large screens */
+}
+
+@media (max-width: 1400px) {
+  html {
+    font-size: 14px; /* Shrinks everything by ~12% on laptops */
+  }
+}
+
+@media (max-width: 768px) {
+  html {
+    font-size: 12px; /* Shrinks everything by ~25% on tablets/mobile */
+  }
+}
+
 :root {
   --primary-gradient: linear-gradient(135deg, #030615 0%, #030105 100%);
   --chat-bg: rgba(255, 255, 255, 0.65);
