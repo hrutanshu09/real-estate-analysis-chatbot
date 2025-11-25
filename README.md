@@ -75,7 +75,7 @@ It is designed to make raw real estate data easier to understand for users, anal
 
 ---
 
-## ⚡ Getting Started
+## Getting Started
 
 ### **Prerequisites**
 - Node.js  
@@ -129,7 +129,7 @@ npm start
 
 ---
 
-## 💬 Example Queries
+## Example Queries
 
 - *"Give me an analysis of Wakad"*
 - *"Compare price trends in Aundh and Baner"*
