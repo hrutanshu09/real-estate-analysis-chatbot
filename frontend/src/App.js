@@ -34,7 +34,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [activeAreas, setActiveAreas] = useState([]);
   const chatEndRef = useRef(null);
-  const API_BASE = "http://127.0.0.1:8000";
+  const API_BASE = "https://real-estate-analysis-chatbot-5xkj.onrender.com";
 
   const suggestions = [
     "Give me analysis of Wakad",
