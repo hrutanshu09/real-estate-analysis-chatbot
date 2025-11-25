@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "./App.css";
+import DarkVeil from './DarkVeil'; 
 import {
   Container,
   Row,
@@ -31,18 +32,15 @@ function App() {
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  
-  // Stores the list of active locations (e.g., ["Wakad", "Aundh"])
   const [activeAreas, setActiveAreas] = useState([]);
-
   const chatEndRef = useRef(null);
-
   const API_BASE = "http://127.0.0.1:8000";
 
   const suggestions = [
-    "Compare Wakad and Aundh",
-    "Analyze all locations",
+    "Give me analysis of Wakad",
+    "Compare Ambegaon Budruk and Aundh demand trends",
     "Best buy in Pune",
+    "Show price growth for Akurdi over the last 3 years",
     "Download data"
   ];
 
@@ -56,7 +54,6 @@ function App() {
     const text = textOverride || input.trim();
     if (!text) return;
 
-    // Handle "Download" intent locally or via button
     if (text.toLowerCase().includes("download")) {
       handleDownload();
       setMessages((prev) => [...prev, { sender: "user", text }]);
@@ -72,7 +69,7 @@ function App() {
     try {
       const res = await axios.post(`${API_BASE}/api/chat/`, {
         message: text,
-        context: { areas: activeAreas } // Send array of areas
+        context: { areas: activeAreas }
       });
 
       const botMsg = {
@@ -80,10 +77,9 @@ function App() {
         text: res.data.summary,
         chart: res.data.chart,
         table: res.data.table,
-        growth: res.data.growth, // Support growth metrics if available
+        growth: res.data.growth,
       };
 
-      // Update context
       if (res.data.context && res.data.context.areas) {
         setActiveAreas(res.data.context.areas);
       }
@@ -132,42 +128,52 @@ function App() {
   };
 
   const renderChart = (chart) => {
-    if (!chart || !chart.labels || !chart.datasets) return null;
+    if (!chart || !Array.isArray(chart.labels) || !Array.isArray(chart.datasets) || chart.labels.length === 0) {
+      return null;
+    }
 
-    const data = chart.labels.map((year, idx) => {
-      const row = { year };
-      chart.datasets.forEach((ds) => {
-        row[ds.label] = ds.data[idx];
+    try {
+      const data = chart.labels.map((year, idx) => {
+        const row = { year };
+        chart.datasets.forEach((ds) => {
+          if (ds && ds.label) {
+             row[ds.label] = ds.data?.[idx] ?? 0; 
+          }
+        });
+        return row;
       });
-      return row;
-    });
 
-    const colors = ["#8884d8", "#82ca9d", "#ffc658", "#ff7300", "#0088FE"];
+      const colors = ["#8884d8", "#82ca9d", "#ffc658", "#ff7300", "#0088FE"];
 
-    return (
-      <div style={{ width: '100%', height: 300, marginTop: '15px' }}>
-        <ResponsiveContainer>
-          <LineChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
-            <XAxis dataKey="year" stroke="#888" />
-            <YAxis stroke="#888" />
-            <Tooltip contentStyle={{ borderRadius: '10px', border: 'none', boxShadow: '0 2px 10px rgba(0,0,0,0.1)' }} />
-            <Legend />
-            {chart.datasets.map((ds, i) => (
-              <Line 
-                key={i} 
-                type="monotone" 
-                dataKey={ds.label} 
-                stroke={colors[i % colors.length]} 
-                strokeWidth={3}
-                dot={{ r: 4 }} 
-                activeDot={{ r: 6 }} 
-              />
-            ))}
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
-    );
+      return (
+        <div style={{ width: '100%', height: 300, marginTop: '15px' }}>
+          <ResponsiveContainer>
+            <LineChart data={data}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
+              <XAxis dataKey="year" stroke="#888" />
+              <YAxis stroke="#888" />
+              <Tooltip contentStyle={{ borderRadius: '10px', border: 'none', boxShadow: '0 2px 10px rgba(0,0,0,0.1)' }} />
+              <Legend />
+              {chart.datasets.map((ds, i) => (
+                <Line 
+                  key={i} 
+                  type="monotone" 
+                  dataKey={ds.label} 
+                  stroke={colors[i % colors.length]} 
+                  strokeWidth={3}
+                  dot={{ r: 4 }} 
+                  activeDot={{ r: 6 }} 
+                  isAnimationActive={true} 
+                />
+              ))}
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      );
+    } catch (error) {
+      console.error("Chart rendering error:", error);
+      return <div className="text-muted text-center p-3">Unable to display chart due to data format issue.</div>;
+    }
   };
 
   const renderGrowth = (growth) => {
@@ -198,7 +204,6 @@ function App() {
   const renderTable = (data) => {
     if (!data || data.length === 0) return null;
 
-    // 1. Group rows by "final location"
     const groupedData = data.reduce((acc, row) => {
       const loc = row["final location"] || "General Data";
       if (!acc[loc]) acc[loc] = [];
@@ -206,12 +211,10 @@ function App() {
       return acc;
     }, {});
 
-    // 2. Render a separate table block for each location
     return (
       <div className="mt-4">
         {Object.entries(groupedData).map(([location, rows], index) => {
           if (rows.length === 0) return null;
-          // Extract columns dynamically from the first row of this group
           const cols = Object.keys(rows[0]);
 
           return (
@@ -251,143 +254,147 @@ function App() {
   };
 
   return (
-    <Container fluid className="main-container px-5">
-      <Row>
-        {/* Chat Section */}
-        <Col md={8} lg={8}>
-          <Card className="chat-card">
-            <Card.Header className="chat-header d-flex justify-content-between align-items-center px-4">
-              <div>
-                <h4 
-                  className="bbh-sans-bartle-regular" 
-                  style={{ color: '#444', margin: 0, fontSize: '2rem' }}
-                >
-                  📊 Real Estate Assistant
-                </h4>
-                {activeAreas.length > 0 && (
-                  <small className="text-muted">
-                    Context: <strong>{activeAreas.join(", ")}</strong>
-                  </small>
-                )}
-              </div>
-              <Button 
-                variant="outline-primary" 
-                size="sm" 
-                onClick={handleDownload}
-                title="Download CSV Report"
-                style={{ borderRadius: "20px", fontSize: "0.8rem" }}
-              >
-                ⬇ Download Data
-              </Button>
-            </Card.Header>
-
-            <div className="chat-body">
-              {messages.map((msg, i) => (
-                <div key={i} className={`message-row ${msg.sender === "user" ? "user-message" : "bot-message"}`}>
-                  <div className="message-bubble">
-                    {msg.text}
-                    {msg.sender === "bot" && (
-                      <>
-                        {renderChart(msg.chart)}
-                        {renderGrowth(msg.growth)}
-                        {renderTable(msg.table)}
-                      </>
-                    )}
-                  </div>
-                </div>
-              ))}
-              
-              {loading && (
-                <div className="message-row bot-message">
-                  <div className="message-bubble" style={{ fontStyle: 'italic', color: '#888' }}>
-                    <Spinner animation="grow" size="sm" className="me-2" />
-                    Analyzing market data...
-                  </div>
-                </div>
-              )}
-              <div ref={chatEndRef}></div>
-            </div>
-
-            <div className="input-area">
-              <div className="mb-3">
-                <div className="quick-actions">
-                  {suggestions
-                    .filter((s) => s !== "Download data")
-                    .map((s, i) => (
-                      <div
-                        key={i}
-                        className="suggestion-chip"
-                        onClick={() => sendMessage(s)}
-                      >
-                        {s}
-                      </div>
-                    ))}
-                </div>
-
-                <div className="d-flex justify-content-center mt-2">
-                  <div
-                    className="suggestion-chip"
-                    onClick={() => sendMessage("Download data")}
-                    style={{
-                      backgroundColor: "#ff7300",
-                      color: "white",
-                      borderColor: "#ff7300",
-                    }}
+    <div style={{ position: 'relative', minHeight: '100vh', overflow: 'hidden' }}>
+      <DarkVeil />
+      
+      <Container fluid className="main-container px-5" style={{ position: 'relative', zIndex: 1 }}>
+        <Row className="justify-content-center">
+          <Col md={7} lg={7}>
+            <Card className="chat-card">
+              <Card.Header className="chat-header d-flex justify-content-between align-items-center px-4">
+                <div>
+                  <h4 
+                    className="bbh-sans-bartle-regular" 
+                    style={{ color: '#444', margin: 0, fontSize: '2rem' }}
                   >
-                    Download data
+                    Real Estate Assistant
+                  </h4>
+                  {activeAreas.length > 0 && (
+                    <small className="text-muted">
+                      Context: <strong>{activeAreas.join(", ")}</strong>
+                    </small>
+                  )}
+                </div>
+                <Button 
+                  variant="outline-primary" 
+                  size="sm" 
+                  onClick={handleDownload}
+                  title="Download CSV Report"
+                  style={{ borderRadius: "20px", fontSize: "0.8rem" }}
+                >
+                  ⬇ Download Data
+                </Button>
+              </Card.Header>
+
+              <div className="chat-body">
+                {messages.map((msg, i) => (
+                  <div key={i} className={`message-row ${msg.sender === "user" ? "user-message" : "bot-message"}`}>
+                    <div className="message-bubble">
+                      {/* Simply render text here, no Typewriter component */}
+                      {msg.text}
+
+                      {msg.sender === "bot" && (
+                        <>
+                          {renderChart(msg.chart)}
+                          {renderGrowth(msg.growth)}
+                          {renderTable(msg.table)}
+                        </>
+                      )}
+                    </div>
+                  </div>
+                ))}
+                
+                {loading && (
+                  <div className="message-row bot-message">
+                    <div className="message-bubble" style={{ fontStyle: 'italic', color: '#888' }}>
+                      <Spinner animation="grow" size="sm" className="me-2" />
+                      Analyzing market data...
+                    </div>
+                  </div>
+                )}
+                <div ref={chatEndRef}></div>
+              </div>
+
+              <div className="input-area">
+                <div className="mb-3">
+                  <div className="quick-actions">
+                    {suggestions
+                      .filter((s) => s !== "Download data")
+                      .map((s, i) => (
+                        <div
+                          key={i}
+                          className="suggestion-chip"
+                          onClick={() => sendMessage(s)}
+                        >
+                          {s}
+                        </div>
+                      ))}
+                  </div>
+
+                  <div className="d-flex justify-content-center mt-2">
+                    <div
+                      className="suggestion-chip"
+                      onClick={() => sendMessage("Download data")}
+                      style={{
+                        backgroundColor: "#ff7300",
+                        color: "white",
+                        borderColor: "#ff7300",
+                      }}
+                    >
+                      Download data
+                    </div>
                   </div>
                 </div>
+                
+                <Form onSubmit={handleSubmit}>
+                  <Row className="g-2">
+                    <Col>
+                      <Form.Control
+                        type="text"
+                        className="custom-input"
+                        placeholder="Type a message..."
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        disabled={loading}
+                      />
+                    </Col>
+                    <Col xs="auto">
+                      <Button type="submit" className="send-btn" disabled={loading}>
+                        ➤
+                      </Button>
+                    </Col>
+                  </Row>
+                </Form>
               </div>
-              
-              <Form onSubmit={handleSubmit}>
-                <Row className="g-2">
-                  <Col>
-                    <Form.Control
-                      type="text"
-                      className="custom-input"
-                      placeholder="Type a message..."
-                      value={input}
-                      onChange={(e) => setInput(e.target.value)}
-                      disabled={loading}
-                    />
-                  </Col>
-                  <Col xs="auto">
-                    <Button type="submit" className="send-btn" disabled={loading}>
-                      ➤
-                    </Button>
-                  </Col>
-                </Row>
-              </Form>
-            </div>
-          </Card>
-        </Col>
+            </Card>
+          </Col>
 
-        {/* Instructions Section (Right Side) */}
-        <Col md={4} lg={4} className="d-none d-md-block">
-          <Card className="p-4 border-0 shadow-sm" style={{ backgroundColor: 'rgba(255, 255, 255, 0.85)', borderRadius: '20px' }}>
-            <h5 
-              className="mb-3 bbh-sans-bartle-regular" 
-              style={{ color: '#444', fontSize: '1.8rem' }}
-            >
-              ℹ️ How to Download
-            </h5>
-            <p className="instruction-text">
-              You can download the real estate data as a CSV file to analyze it yourself.
-            </p>
-            <hr style={{ borderColor: '#ddd' }}/>
-            <h6 style={{ fontSize: '1.1rem', fontWeight: '600', color: '#667eea' }}>Smart Download</h6>
-            <p className="instruction-subtext">
-              If you are discussing specific locations (e.g., "Wakad vs Aundh"), the file will contain data for <strong>only those areas</strong>. 
-              If no location is selected, you will get the <strong>full dataset</strong>.
-            </p>
-            <h6 style={{ fontSize: '1.1rem', fontWeight: '600', color: '#667eea' }}>How to Use</h6>
-            <p className="instruction-subtext">
-              Click the <strong>"⬇ Download Data"</strong> button at the top right of the chat, or simply type <strong>"Download data"</strong> in the chat.
-            </p>
-          </Card>
-        </Col>
-      </Row>
-    </Container>
+          <Col md={5} lg={5} className="d-none d-md-block">
+            <Card className="p-4 border-0 shadow-sm" style={{ backgroundColor: 'rgba(255, 255, 255, 0.85)', borderRadius: '20px' }}>
+              <h5 
+                className="mb-3 bbh-sans-bartle-regular" 
+                style={{ color: '#444', fontSize: '1.8rem' }}
+              >
+                ℹ️ How to Download
+              </h5>
+              <p className="instruction-text">
+                You can download the real estate data as a CSV file to analyze it yourself.
+              </p>
+              <hr style={{ borderColor: '#ddd' }}/>
+              <h6 style={{ fontSize: '1.1rem', fontWeight: '600', color: '#667eea' }}>Smart Download</h6>
+              <p className="instruction-subtext">
+                If you are discussing specific locations (e.g., "Wakad vs Aundh"), the file will contain data for <strong>only those areas</strong>. 
+                If no location is selected, you will get the <strong>full dataset</strong>.
+              </p>
+              <h6 style={{ fontSize: '1.1rem', fontWeight: '600', color: '#667eea' }}>How to Use</h6>
+              <p className="instruction-subtext">
+                Click the <strong>"⬇ Download Data"</strong> button at the top right of the chat, or simply type <strong>"Download data"</strong> in the chat.
+              </p>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
+    </div>
   );
 }
 

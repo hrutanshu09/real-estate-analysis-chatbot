@@ -1,18 +1,16 @@
-/* Import Outfit Font correctly */
+/* Imports for both fonts */
+@import url('https://fonts.googleapis.com/css2?family=BBH+Sans+Bartle&family=Changa+One:ital@0;1&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
-/* The previous BBH import was invalid (400 error) on Google Fonts, so it has been removed to prevent blocking Outfit. */
 
 :root {
-  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --chat-bg: rgba(255, 255, 255, 0.95);
+  --primary-gradient: linear-gradient(135deg, #030615 0%, #030105 100%);
+  --chat-bg: rgba(255, 255, 255, 0.65);
   --user-msg-bg: #667eea;
   --bot-msg-bg: #f1f3f5;
   --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 /* Title Font Class */
-/* Note: Since BBH Sans Bartle is not on Google Fonts, this class will fall back to sans-serif 
-   unless you have the font file locally or a valid custom URL. */
 .bbh-sans-bartle-regular {
   font-family: "BBH Sans Bartle", sans-serif;
   font-weight: 400;
@@ -23,7 +21,7 @@
 body {
   background-image: var(--primary-gradient);
   min-height: 100vh;
-  font-family: "Outfit", sans-serif; /* Global font application */
+  font-family: "Outfit", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -38,29 +36,29 @@ body {
   border-radius: 20px !important;
   box-shadow: var(--shadow-lg);
   background-color: var(--chat-bg) !important;
+  backdrop-filter: blur(10px);
   overflow: hidden;
 }
 
 .chat-header {
-  background: white;
-  border-bottom: 1px solid #eee;
+  background: rgba(255, 255, 255, 0.9);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   padding: 15px 0;
   margin-bottom: 0 !important;
 }
 
 .chat-body {
-  height: 65vh;
+  height: 58vh;
   overflow-y: auto;
   padding: 20px;
   scroll-behavior: smooth;
 }
 
-/* Scrollbar styling */
 .chat-body::-webkit-scrollbar {
   width: 6px;
 }
 .chat-body::-webkit-scrollbar-thumb {
-  background-color: #ccc;
+  background-color: rgba(0, 0, 0, 0.2);
   border-radius: 10px;
 }
 
@@ -68,7 +66,7 @@ body {
 .message-row {
   display: flex;
   margin-bottom: 16px;
-  animation: fadeIn 0.3s ease-in-out;
+  animation: fadeIn 0.4s ease-in-out;
 }
 
 .message-bubble {
@@ -79,7 +77,6 @@ body {
   line-height: 1.6;
   position: relative;
   box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-  /* Ensure Outfit applies here */
   font-family: "Outfit", sans-serif;
 }
 
@@ -113,16 +110,15 @@ body {
 }
 
 .suggestion-chip {
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid #ddd;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(0,0,0,0.1);
   border-radius: 20px;
   padding: 8px 18px;
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.2s;
-  color: #555;
-  background: white;
-  /* Ensure Outfit applies here */
+  color: #444;
+  backdrop-filter: blur(4px);
   font-family: "Outfit", sans-serif;
 }
 
@@ -135,9 +131,10 @@ body {
 
 /* Input Area */
 .input-area {
-  background: white;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
   padding: 20px;
-  border-top: 1px solid #eee;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
 }
@@ -145,17 +142,25 @@ body {
 .custom-input {
   border-radius: 25px !important;
   padding-left: 20px !important;
-  border: 2px solid #eee !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
   font-size: 1.1rem !important;
   padding-top: 10px !important;
   padding-bottom: 10px !important;
-  /* Ensure Outfit applies to input text */
   font-family: "Outfit", sans-serif !important;
+  background-color: rgba(255, 255, 255, 0.4) !important; 
+  color: #1a1a1a !important; 
+  transition: all 0.3s ease;
+}
+
+.custom-input::placeholder {
+  color: rgba(0, 0, 0, 0.5);
 }
 
 .custom-input:focus {
+  background-color: rgba(255, 255, 255, 0.7) !important;
   border-color: #667eea !important;
-  box-shadow: none !important;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.25) !important;
+  color: #000 !important;
 }
 
 .send-btn {
@@ -167,15 +172,17 @@ body {
   justify-content: center;
   background: #667eea !important;
   border: none !important;
+  box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
 }
 
 .send-btn:hover {
   background: #5a6fd6 !important;
+  transform: scale(1.05);
 }
 
 /* Animations */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(15px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
@@ -187,13 +194,23 @@ body {
 .instruction-text {
   font-size: 1.15rem !important;
   line-height: 1.6;
-  color: #555;
+  color: #333;
   font-family: "Outfit", sans-serif;
 }
 
 .instruction-subtext {
   font-size: 1.05rem !important;
-  color: #666;
+  color: #444;
   line-height: 1.5;
   font-family: "Outfit", sans-serif;
+}
+
+.darkveil-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0; /* Sits behind the Container content */
+  pointer-events: none; /* Allows clicking through to content */
 }
